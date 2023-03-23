@@ -1,0 +1,35 @@
+# .github/workflows/mirror-to-aws.yml
+#
+# The name of your workflow as shown on your repository's "Actions" tab.
+name: github-mirror-to-aws-codecommit
+
+# The name of your workflow run generated from the workflow.
+run-name: Mirror to AWS @${{ github.run_id }} / @${{ github.run_attempt }} github.event_name
+
+# which events can cause the workflow to run
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1.0.3
+        with:
+          aws-access-key-id: ${{ secrets.ZCS_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ZCS_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.ZCS_AWS_REGION }}
+
+      - name: Sync up to CodeCommit
+        uses: tsgit18/sync-up-to-codecommit-action@v1
+        with:
+          repository_name: ${{ secrets.ZCS_MIRRORING_REPOSITORY }}
+          aws_region: ${{ secrets.ZCS_AWS_REGION }}
