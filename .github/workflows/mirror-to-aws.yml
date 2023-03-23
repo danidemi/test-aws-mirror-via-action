@@ -23,10 +23,11 @@ jobs:
           
       - name: Git Status
         uses: fnkr/github-action-git-bash@v1
-        args: 
-          - bash
-          - -c
-          - "git show-branch --all"
+        with:
+          args: 
+            - bash
+            - -c
+            - "git show-branch --all"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2.0.0
