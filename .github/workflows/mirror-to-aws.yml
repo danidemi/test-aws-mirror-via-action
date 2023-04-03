@@ -28,8 +28,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.ZCS_AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.ZCS_AWS_REGION }}
 
-      - name: Sync up to CodeCommit
-        uses: tsgit18/sync-up-to-codecommit-action@v1.0.6
+      # - name: Sync up to CodeCommit
+      #   uses: tsgit18/sync-up-to-codecommit-action@v1.0.6
+      #   with:
+      #     repository_name: ${{ secrets.ZCS_MIRRORING_REPOSITORY }}
+      #     aws_region: ${{ secrets.ZCS_AWS_REGION }}
+
+      - uses: pixta-dev/repository-mirroring-action@v1.1.1
         with:
-          repository_name: ${{ secrets.ZCS_MIRRORING_REPOSITORY }}
-          aws_region: ${{ secrets.ZCS_AWS_REGION }}
+          target_repo_url:
+            ssh://git-codecommit.eu-west-1.amazonaws.com/v1/repos/test-mirror-from-github
+          ssh_private_key:
+            ${{ secrets.CODECOMMIT_SSH_PRIVATE_KEY }}
+          ssh_username:                                 # <-- (for codecommit) you need to specify ssh-key-id as ssh username.
+            ${{ secrets.CODECOMMIT_SSH_PRIVATE_KEY_ID }}
